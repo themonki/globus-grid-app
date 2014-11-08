@@ -1,8 +1,0 @@
-{ 
-"host_name" : "mgwn1.globustest.org",
-"host_server" : "mg.globustest.org",
-"user_name" : "vagrant",
-"pass_user" : "vagrant",
-"name" : "VagrantUser",
-"run_list": [ "recipe[security-cacerts::setupsecondmachine]" ] 
-}

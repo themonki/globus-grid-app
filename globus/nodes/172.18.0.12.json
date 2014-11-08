@@ -1,7 +1,0 @@
-{
-"user_name" : "vagrant",
-"pass_user" : "vagrant",
-"alias_server" : "mg",
-"host_name" : "mgwn1.globustest.org",
-"run_list": ["recipe[repositories]","recipe[globususer]","recipe[globuspackages]" , "recipe[security-cacerts::secondmachine]", "recipe[security-cacerts::iptables]", "recipe[security-cacerts::servicessecondmachine]" ] 
-}

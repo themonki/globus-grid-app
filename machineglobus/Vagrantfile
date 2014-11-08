@@ -1,86 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#Problema:
-
-#Al iniciar la maquina virtual con el comando:
-#vagrant up
-#El script de  vagrant se queda esperando a que la máquina alla booteado, 
-#cosa que ocurre correctamente pero al parecer es necesario que se reinicie
-# manualmente la red:
-
-#desde otra terminal: 
-#ubicado en la misma ruta dar vagrant ssh <nombremachine>
-#sudo /etc/init.d/network restart
-
-#iniciando en modo gui:
-#para acceder por medio de:
-#user:vagrant y password:vagrant
-#sudo /etc/init.d/network restart
-
-#Una vez hecho esto el script continúa y termina como normalmente lo hace.
-#Lo que pasaba al parecer era que de alguna forma no tenía conexión de red y
-# al tratar de actualizar lista de paquetes o hacer ping la maquina no lo 
-#podía hacer.
-
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.require_version ">= 1.6.5"
 
-USE_SHARE_FOLDER = false
+USE_SHARE_FOLDER = true
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-	
-	config.vm .define :mgwn1 do |node|
-		node.vm.box = "centos64"
-		#node.vm.boot_mode = :gui
-		#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
-		node.vm.network "private_network", ip: "172.18.0.12"
-		node.vm.provider "virtualbox" do |vb|
-			vb.customize ["modifyvm", :id, "--memory", 400, "--cpus", 2, "--name", "globus-client" ]
-		end
-		node.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "cookbooks"
-			chef.json.merge!({
-				:run_list => [ "recipe[confighost::preinstall]",
-				"recipe[confighost::hostname]",
-				"recipe[confighost::hostconfigurenode]",
-				"recipe[chefInstall::install]",
-				"recipe[preinstall]"],
-				:host_name => "mgwn1.globustest.org",
-				:alias => "mgwn1",
-				:use_share_folder => USE_SHARE_FOLDER
-				})
-		end
-	end
-	
-	config.vm .define :mg do |node|
-		node.vm.box = "centos64"
-		#node.vm.boot_mode = :gui
-		#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
-		node.vm.network "private_network", ip: "172.18.0.11"
-		node.vm.provider "virtualbox" do |vb|
-			vb.customize ["modifyvm", :id, "--memory", 400, "--cpus", 2, "--name", "globus-master" ]
-		end
-		node.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "cookbooks"
-			chef.json.merge!({
-				:run_list => [ "recipe[confighost::preinstall]",
-				"recipe[confighost::hostname]",
-				"recipe[confighost::hostconfiguremaster]",
-				"recipe[chefInstall::install]",
-				"recipe[preinstall]", "recipe[postgresql]",
-				"recipe[postgresql::configure]",
-				"recipe[apache]", "recipe[apache::configure]",
-				"recipe[php]", "recipe[php::installdebug]",
-				"recipe[java7-64]", "recipe[tomcat7]" ],
-				:host_name => "mg.globustest.org",
-				:hostslaves => ["mgwn1"], #lista de todos los nodos
-				:alias => "mg",
-				:use_share_folder => USE_SHARE_FOLDER
-			})
-		end
-	end
 	
 	config.vm .define :mgwn2 do |node|
 		node.vm.box = "centos64"
@@ -99,7 +26,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				"recipe[chefInstall::install]",
 				"recipe[preinstall]" ],
 				:host_name => "mgwn2.globustest.org",
-				:alias => "mgwn2" 
+				:alias => "mgwn2",
+				:use_share_folder => USE_SHARE_FOLDER
 			})
 		end
 	end

@@ -30,13 +30,13 @@ end
 #example
 
 template "/home/#{node[:user_name]}/a.rsl" do
-          source "a.rsl.rb"
-          mode 0755
-          owner "#{node[:user_name]}"
-          variables(
-                  :host_name => "#{node[:host_name]}"
-          )
-  end
+	source "a.rsl.rb"
+	mode 0755
+	owner "#{node[:user_name]}"
+	variables(
+	        :host_name => "#{node[:host_name]}"
+	)
+end
 
 #################################################################################
 #user cert

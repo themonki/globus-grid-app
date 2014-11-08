@@ -16,20 +16,5 @@ execute "chkconfig globus-gridftp-server" do
 	user "root"
 	cwd "/tmp"
 	action :run
-end	
-
-#execute "chkconfig globus-gridftp-sshftp" do
-#	command "chkconfig globus-gridftp-sshftp on"
-#	user "root"
-#	cwd "/tmp"
-#	action :run
-#end	
-
-#execute "chkconfig myproxy-server" do
-#	command "chkconfig myproxy-server on"
-#	user "root"
-#	cwd "/tmp"
-#	action :run
-#end
-
+end
 
