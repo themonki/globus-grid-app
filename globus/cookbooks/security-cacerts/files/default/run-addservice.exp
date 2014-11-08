@@ -1,0 +1,68 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+set sizeargv [llength $argv]
+set passGrid "globus"
+set passUser "vagrant"
+set userName "vagrant"
+set hostname "mgwn1.globustest.org"
+
+if { $sizeargv != 0} {
+	if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 || $sizeargv == 8 || $sizeargv == 10 } {
+		for {set i 0} {$i < [llength $argv]} {incr i 2} {
+			set argvtmp [lindex $argv $i];
+			if {$argvtmp == "-u"} { #userName
+				set index [expr $i+1];
+					set userName [lindex $argv $index];
+			} elseif {$argvtmp == "-pu"} {#passUser
+				set index [expr $i+1];
+					set passUser [lindex $argv $index];
+			} elseif {$argvtmp == "-pg"} {#passGrid
+				set index [expr $i+1];
+					set passGrid [lindex $argv $index];
+			} elseif {$argvtmp == "-h"} {#hostname FQDN
+				set index [expr $i+1];
+					set hostname [lindex $argv $index];
+			}
+		}
+	} else {
+		send_user "Error parametros incompletos\n"
+		send_user "Uso: run-addservice -u userName -pu passUser -pg passGrid -h hostname_FQDN"
+		exit 1
+	}
+}
+
+#
+#resultado:
+#Enter PEM pass phrase:
+#Verifying - Enter PEM pass phrase:
+
+#To sign the request
+#please enter the password for the CA key: 
+
+#The new signed certificate is at: /var/lib/myproxy/.globus/simpleCA/newcerts/03.pem
+
+#using storage directory /var/lib/myproxy
+#Credential stored successfully
+#Certificate subject is:
+#/O=Grid/OU=GlobusTest/OU=simpleCA-mg.globustest.org/OU=local/CN=mgwn1.globustest.org
+
+spawn sudo -H -E -u myproxy myproxy-admin-addservice -c "$hostname" -l $userName
+
+expect {
+	"Enter PEM pass phrase:" {
+		send "$passUser\r"
+		exp_continue
+	}
+	"Verifying - Enter PEM pass phrase:" {
+		send "$passUser\r"
+		exp_continue
+	}
+	"please enter the password for the CA key:" {
+		send "$passGrid\r"
+		expect "/O=Grid/"
+		send_user "\nusuario creado\n"
+	}
+}
+

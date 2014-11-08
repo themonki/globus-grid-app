@@ -1,0 +1,72 @@
+.forms .show{    
+
+}
+
+.forms .hide{
+    display: none;
+}
+
+.forms .jobsUser {
+
+
+}
+
+.targetZClip {
+    position: relative!important; 
+    display: inline-block!important;
+}
+
+.buttonCancel {
+    background-image: url('../resources/images/messages-boxes/error.png')!important;
+}
+.buttonContact {
+    background-image: url('../resources/images/messages-boxes/info.png')!important;
+}
+
+.buttonCopy, * span .buttonCopy {
+    font-weight: bold!important;
+    line-height: 1!important;
+    text-align: center!important;
+    text-shadow: 0 -1px 1px #787878!important;
+    font-size: 13px!important;
+    color: white!important;
+    border-radius: 3px!important;
+    border: 2px solid #787878!important;
+    box-shadow: inset 0 1px 0 #787878!important;
+    background: white!important;
+    background: linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -o-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -moz-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -webkit-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -ms-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    padding: 5px 5px 5px 5px!important;    
+}
+
+a.buttonCopy {
+    text-decoration: none!important;
+}
+
+.forms .jobsUser .buttonAction, .buttonAction,
+.buttonAction:focus:valid
+{
+    width: 34px!important;
+    height: 34px!important;
+    background-color:transparent!important;
+    background-repeat:no-repeat!important;
+    border:none!important;
+    /*line-height: 100!important;*/
+    /*overflow: hidden!important;*/
+    display: inline-flex;
+}
+
+* .buttonAction:hover {
+    border: 2px solid  red!important;
+    background-color:transparent!important;
+}
+
+.formActions{
+    padding: 0 0 0 0!important;
+}
+
+
+

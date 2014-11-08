@@ -1,0 +1,60 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+#http://www.pantz.org/software/expect/expect_examples_and_tips.html
+#https://www.centos.org/modules/newbb/viewtopic.php?topic_id=28721
+#http://stackoverflow.com/questions/13199977/speed-of-expect-script
+#http://www.thegeekstuff.com/2011/01/expect-expressions-loops-conditions/
+#http://pensamientosdeotromas.netii.net/2011/07/18/automatiza-todo-lo-que-puedas-con-expect/
+
+
+set timeout 10
+set username ""
+set host_server ""
+set pass ""
+set location_server ""
+set location_host ""
+set sizeargv [llength $argv]
+
+if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 || $sizeargv == 8 || $sizeargv == 10 } {
+	for {set i 0} {$i < [llength $argv]} {incr i 2} {
+		set argvtmp [lindex $argv $i];
+		if {$argvtmp == "-u"} { #username
+			set index [expr $i+1];
+			set username [lindex $argv $index];
+		} elseif {$argvtmp == "-p"} {#pass
+			set index [expr $i+1];
+			set pass [lindex $argv $index];
+		} elseif {$argvtmp == "-s"} {#location_server
+			set index [expr $i+1];
+			set location_server [lindex $argv $index];
+		} elseif {$argvtmp == "-h"} {#host_server
+			set index [expr $i+1];
+			set host_server [lindex $argv $index];
+		} elseif {$argvtmp == "-l"} {#location_host
+			set index [expr $i+1];
+			set location_host [lindex $argv $index];
+		}
+	}
+} else {
+	send_user "Error parametros incompletos\n"
+	send_user "Uso: get-file-server.exp -u username -p pass -h host_server -s location_server -l location_server \n"
+	exit 1
+}
+
+spawn scp -r $username@$host_server:$location_server $location_host
+
+expect {
+	"*connecting (yes/no)?" {
+		send "yes\r"
+		exp_continue
+	} #primera vez
+	"*assword:" {
+		send "$pass\r"
+		expect "expecting."
+		send_user "pass enviado\n"
+	}
+}
+send_user "\nse realiza correctamente\n"
+

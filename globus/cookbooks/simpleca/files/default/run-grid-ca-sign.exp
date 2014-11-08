@@ -1,0 +1,55 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+#expect para grid-ca-sign
+set timeout 20
+set sizeargv [llength $argv]
+set passGrid "globus"
+set infile "request.pem"
+set outfile "signed.pem"
+set extfileconf ""
+set paramsextfileconf ""
+
+if { $sizeargv != 0} {
+	if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 | $sizeargv == 8 } {
+		for {set i 0} {$i < [llength $argv]} {incr i 2} {
+			set argvtmp [lindex $argv $i];
+			if {$argvtmp == "-p"} { #passGrid
+				set index [expr $i+1];
+				set passGrid [lindex $argv $index];
+			} elseif {$argvtmp == "-in"} {#infile
+				set index [expr $i+1];
+				set infile [lindex $argv $index];
+			} elseif {$argvtmp == "-out"} {#outfile
+				set index [expr $i+1];
+				set outfile [lindex $argv $index];
+			} elseif {$argvtmp == "-f"} {#extfileconf
+				set index [expr $i+1];
+				set extfileconf [lindex $argv $index];
+			}
+		}
+	} else {
+		send_user "Error parametros incompletos\n"
+		send_user "Uso: run-grid-ca-sign -p passGrid -in infile -out outfile -f extfile"
+		exit 1
+	}
+}
+
+#please enter the password for the CA key:
+#expect dont work
+
+if { $extfileconf != "" } {
+	set paramsextfileconf "-extfile $extfileconf" ;
+}
+
+spawn grid-ca-sign -in $infile -out $outfile $paramsextfileconf
+
+send_user "expecting\n"
+send "$passGrid\r"
+expect eof {
+	send_user "\nsigned\n"
+}
+
+
+

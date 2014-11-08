@@ -1,0 +1,48 @@
+.profile {
+    clear: both;
+    width: 100%;
+    height: 100%
+}
+
+.profile .photo {
+    clear: left;
+    float: left;
+    width: 16%;
+    min-width: 150px;
+    max-width: 150px;
+    padding: 20px 0 5px 0;
+    margin: 0 0 0 4%;
+}
+
+.profile .photo img {
+    /*120 x 150*/
+    width: 120px;
+    height: 150px;
+}
+
+.profile .containerText {    
+    padding: 20px 0 5px 0;
+    margin: 0 3% 0 0;
+    display: table-cell;    
+}
+
+.profile .containerText * {
+    min-width: 164px!important;
+    max-width: 650px;
+    display: block;
+    padding: 5px 10px 0 5px;
+    word-break: break-all;
+    margin: 0 0 0 0;
+}
+
+.profile .containerText .name {    
+}
+
+.profile .containerText .email {   
+}
+
+.profile .certsInfo {    
+    clear: left;
+    display: block;
+    padding: 5px 10px 5px 40px;
+}

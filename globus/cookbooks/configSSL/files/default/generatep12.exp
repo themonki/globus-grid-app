@@ -1,0 +1,63 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+##openssl pkcs12 -export -in /home/vagrant/.globus/usercert.pem \
+# -inkey /home/vagrant/.globus/userkey.pem\
+# -certfile /home/globus/.globus/simpleCA/cacert.pem -out webcert.p12
+set timeout 10
+set in "/home/vagrant/.globus/usercert.pem"
+set inkey "/home/vagrant/.globus/userkey.pem"
+set out "/tmp/webcert.p12"
+set passuser "vagrant"
+set passout ""
+set sizeargv [llength $argv]
+
+if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 || $sizeargv == 8 || $sizeargv == 10 || $sizeargv == 12 } {
+	for {set i 0} {$i < [llength $argv]} {incr i 2} {
+		set argvtmp [lindex $argv $i];
+		if { $argvtmp == "-i" } { #in
+			set index [expr $i+1];
+			set in [lindex $argv $index];
+		} elseif { $argvtmp == "-k" } {#inkey
+			set index [expr $i+1];
+			set inkey [lindex $argv $index];
+		} elseif { $argvtmp == "-o" } {#out
+			set index [expr $i+1];
+			set out [lindex $argv $index];
+		} elseif { $argvtmp == "-pu" } {#passuser
+			set index [expr $i+1];
+			set passuser [lindex $argv $index];
+		} elseif { $argvtmp == "-po" } {#passout
+			set index [expr $i+1];
+			set passout [lindex $argv $index];
+		}
+	}
+} else {
+	send_user "Error parametros incompletos\n"
+	send_user "Uso: generatep12.exp -i in -k inkey -o out -pu passuser -po passout \n"
+	exit 1
+}
+
+
+#Enter pass phrase for /home/vagrant/.globus/userkey.pem:
+#Enter Export Password:
+#Verifying - Enter Export Password:
+
+spawn openssl pkcs12 -export -in $in -inkey $inkey -out $out
+
+expect {
+	"Enter pass phrase for" {
+		send "$passuser\r"
+		exp_continue
+	} #primera vez
+	"Enter Export Password:" {
+		send "$passout\r"
+		exp_continue
+	}
+	"Verifying - Enter Export Password:" {
+		send "$passout\r"
+	}
+}
+send_user "\nse realiza correctamente\n"
+

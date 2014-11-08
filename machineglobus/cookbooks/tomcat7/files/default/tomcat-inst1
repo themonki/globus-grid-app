@@ -1,0 +1,144 @@
+#!/bin/bash
+#
+# Startup script for the Tomcat 7.0 Servlet/JSP Container
+#
+# chkconfig: 345 98 02
+# description: Tomcat is the servlet container that is used in the
+#              official Reference Implementation for the Java Servlet
+#              and JavaServer Pages technologies.
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+INSTANCE=tomcat-inst1
+export INSTANCE
+CATALINA_HOME=/opt/tomcat/${INSTANCE}/tomcat-current
+
+# Source configuration.
+[ -f /etc/sysconfig/${INSTANCE} ] && . /etc/sysconfig/${INSTANCE}
+
+RETVAL=0
+
+
+start() {
+    if [ -f /var/run/${INSTANCE}_restart ]
+        then
+        /bin/rm /var/run/${INSTANCE}_restart
+    fi
+    echo -n $"Starting $prog: "
+
+    if [ ! -f /var/lock/subsys/${INSTANCE} ]; then
+        
+            su - tomcat -c "INST_NAME=${INSTANCE} $CATALINA_HOME/bin/startup.sh"
+        
+
+        if [ $RETVAL = 0 ]; then
+            success $"$prog startup"
+            touch /var/lock/subsys/${INSTANCE}
+        else
+            failure $"$prog startup"
+        fi
+    fi
+
+    echo
+    return $RETVAL
+}
+
+stop() {
+    /bin/touch /var/run/${INSTANCE}_restart
+    echo -n $"Stopping $prog: "
+
+    if [ -f /var/lock/subsys/${INSTANCE} ]; then
+        su - tomcat -c "$CATALINA_HOME/bin/shutdown.sh -force"
+
+        if [ $RETVAL = 0 ]; then
+            success $"$prog shutdown"
+            rm -f /var/lock/subsys/${INSTANCE}
+        else
+            failure $"$prog shutdown"
+        fi
+    fi
+
+    echo
+    return $RETVAL
+}
+
+stopforce() {
+    /bin/touch /var/run/${INSTANCE}_restart
+    echo -n $"Forcefully Stopping $prog: "
+
+    if [ -f /var/lock/subsys/${INSTANCE} ]; then
+        su - tomcat -c "$CATALINA_HOME/bin/shutdown.sh -force"
+
+        if [ $RETVAL = 0 ]; then
+            success $"$prog shutdown"
+            rm -f /var/lock/subsys/${INSTANCE}
+        else
+            failure $"$prog shutdown"
+        fi
+    fi
+
+    echo
+    return $RETVAL
+}
+
+status() {
+    local base=${1##*/}
+    if [ -f /var/lock/subsys/${base} ]; then
+        echo $"${base} is running..."
+        return 0
+    else
+        echo $"${base} is stopped."
+        return 3
+    fi
+}
+
+getpid() {
+        tomcatpid=`ps auwwwx | grep -v grep |grep -i /${INSTANCE}/ | awk '{print $2}'`
+        echo "The PID for ${INSTANCE} is ${tomcatpid}."
+        echo
+}
+
+threaddump() {
+        getpid
+        kill -3 ${tomcatpid}
+        echo "Thread dump has been sent to where stdout is logged."
+        echo
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  stopforce)
+        stopforce
+        ;;
+  status)
+        status ${INSTANCE}
+        ;;
+  restart|reload)
+        stopforce
+        start
+        ;;
+  condrestart)
+        if [ -f /var/lock/subsys/${INSTANCE} ] ; then
+                stop
+                start
+        fi
+        ;;
+  getpid)
+        getpid
+        ;;
+  threaddump)
+        threaddump
+        ;;
+  *)
+        echo $"Usage: $prog {start|stop|stopforce|restart|condrestart|reload|status|getpid|threaddump}"
+        exit 1
+esac
+
+exit $RETVAL

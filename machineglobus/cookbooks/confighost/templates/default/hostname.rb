@@ -1,0 +1,1 @@
+<%= node[:host_name] %>

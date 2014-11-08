@@ -1,0 +1,7 @@
+{
+"user_name" : "vagrant",
+"pass_user" : "vagrant",
+"name" : "VagrantUser",
+"host_name" : "mg.globustest.org",
+"run_list": ["recipe[repositories]","recipe[globususer]","recipe[globuspackages]", "recipe[osgcacerts]" , "recipe[security-cacerts]" , "recipe[security-cacerts::iptables]", "recipe[security-cacerts::services]" ]
+}

@@ -1,0 +1,99 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+#http://www.pantz.org/software/expect/expect_examples_and_tips.html
+#https://www.centos.org/modules/newbb/viewtopic.php?topic_id=28721
+#http://stackoverflow.com/questions/13199977/speed-of-expect-script
+#http://www.thegeekstuff.com/2011/01/expect-expressions-loops-conditions/
+#http://pensamientosdeotromas.netii.net/2011/07/18/automatiza-todo-lo-que-puedas-con-expect/
+
+set timeout 100
+set username ""
+set host ""
+set pass ""
+set location ""
+set locationdefault ".ssh/id_rsa"
+set phrase ""
+set sizeargv [llength $argv]
+set overwrite "n"
+
+if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 || $sizeargv == 8 || $sizeargv == 10 || $sizeargv == 12} {
+	for {set i 0} {$i < [llength $argv]} {incr i 2} {
+		set argvtmp [lindex $argv $i];
+		if {$argvtmp == "-u"} { #username
+			set index [expr $i+1];
+			set username [lindex $argv $index];
+		} elseif {$argvtmp == "-p"} {#pass
+			set index [expr $i+1];
+			set pass [lindex $argv $index];
+		} elseif {$argvtmp == "-f"} {#phrase
+			set index [expr $i+1];
+			set phrase [lindex $argv $index];
+		} elseif {$argvtmp == "-h"} {#host
+			set index [expr $i+1];
+			set host [lindex $argv $index];
+		} elseif {$argvtmp == "-l"} {#location
+			set index [expr $i+1];
+			set location [lindex $argv $index];
+		} elseif {$argvtmp == "-o"} {#overwrite
+			set index [expr $i+1];
+			set overwrite [lindex $argv $index];
+		}
+	}
+} else {
+	send_user "Error parametros incompletos\n"
+	send_user "Uso: configssh -u username -p pass -f phrase -h host -l location -o overwrite(y/N)\n"
+	exit 1
+}
+
+spawn ssh-keygen -t rsa
+
+expect "*.ssh/id_rsa):" {send "$location\r"}
+
+expect {
+	"Overwrite (y/n)?" {
+		send "$overwrite\r"
+		exp_continue
+	}
+	"Enter passphrase" {
+		send "$phrase\r"
+		expect "Enter same passphrase again" {
+			send "$phrase\r"
+			exp_continue
+		}
+	}
+	"$" {
+		send_user "Vacio frase\n"
+	}
+}
+
+
+send_user "\nrealizado creacion de llave publica\n"
+
+if {$username == "" && $host == ""} {
+	send_user "finalizado\n"
+	exit
+}
+
+send_user "enviar llave a la maquina dada\n"
+
+if { $location == "" } {
+	send_user "no ahi locacion\n"
+	set location $locationdefault
+}
+
+spawn ssh-copy-id -i $location.pub $username@$host
+
+expect {
+	"*connecting (yes/no)?" {
+		send "yes\r"
+		exp_continue
+	} #primera vez
+	"*assword:" {
+		send "$pass\r"
+		expect "expecting."
+		send_user "pass enviado\n"
+	}
+}
+send_user "\nse realiza correctamente\n"

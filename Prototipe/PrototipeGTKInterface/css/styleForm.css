@@ -1,0 +1,188 @@
+/* 
+    Document   : styleForm
+    Created on : Oct 11, 2013, 1:01:33 PM
+    Author     : monki
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.forms {
+    width: 80%;
+    margin: 0 auto ; 
+}
+
+
+.forms form {    
+    padding: 20px;
+    overflow:auto;
+    width: 100%;
+    width: auto!important;       
+    width: 100%;
+    /*width: 500px;*/
+    /*height: 260px;*/
+    /*    margin: 0 auto;
+        background: white;
+        text-align: center;
+        padding-top: 1px;
+        position: relative;*/
+
+}
+
+
+.forms .field, .field{
+    display: flex;
+}
+
+
+.forms .field *, .field *{
+    width: 100%;
+}
+
+.forms .label {
+    font-family: Arial, Verdana;
+    display: block;
+    float: left;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-right:10px;
+    text-align: left;
+    width: 250px;
+    line-height: 25px;
+    font-size: 15px;
+
+}
+
+.forms .text-field {
+    font-family: Arial, Verdana;
+    font-size: 15px;
+    padding: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #b9bdc1;
+    /*width: 300px;*/
+    color: #797979;
+    height: 20px;
+}
+
+.forms .text-field:focus {
+    box-shadow: inset 0 0 2px rgba(0,0,0, .3);
+    color: #a6a6a6;
+    background: white;    
+}
+
+.forms .button {
+
+    margin-left:50%;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+
+    /* Background gradient */
+    background: linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -o-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -moz-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -webkit-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -ms-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    border-radius: 3px;
+    border: 2px solid #787878;
+    box-shadow: inset 0 1px 0 #787878;
+    width: 80px;
+    height: 40px;
+    margin-top: 20px;
+    cursor: pointer;
+    color: white;
+    text-shadow: 0 -1px 0 #336895;
+    font-size: 13px;
+}
+
+.forms input:required:invalid, input:focus:invalid {    
+    border: 2px solid red!important;
+    color: #a6a6a6;
+    background: white;
+}
+input:focus:valid {
+    border: 2px solid  green!important;
+    color: #a6a6a6;
+    background: white;
+}
+
+.forms .button:hover {
+    background: linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -o-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -moz-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -webkit-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -ms-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+}
+
+.forms .button:active {
+    background: linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -o-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -moz-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -webkit-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -ms-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+
+    box-shadow: inset 0 0 2px rgba(0,0,0, .3), 0 1px 0 white;
+}
+
+.forms .button:focus{
+    background: linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -o-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -moz-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -webkit-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -ms-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+
+    box-shadow: inset 0 0 2px rgba(0,0,0, .3), 0 1px 0 white;
+}
+
+.forms .noField .label {
+    font-family: Arial, Verdana;
+    display: block;
+    float: none;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-right:10px;
+    text-align: left;
+    width: auto;
+    line-height: 25px;
+    font-size: 15px;
+}
+
+.formBorder {    
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(0,0,0, .4); 
+}
+
+
+/*http://cssdeck.com/labs/styling-select-box-with-css3*/
+
+.forms .input-select {
+    height: 40px!important;
+    min-height: 20px;
+    width: 100%;
+    padding:5px!important;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    -webkit-border-radius:4px!important;
+    -moz-border-radius:4px!important;
+    border-radius:4px!important;
+    -webkit-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset!important;
+    -moz-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset!important;
+    box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset!important;
+    background: linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -o-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -moz-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -webkit-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important;
+    background: -ms-linear-gradient(bottom, #3c3c3c 0%, #787878 100%)!important; 
+    border:none!important;
+    outline:none!important;
+    display: inline-block!important;
+    cursor: pointer!important;
+    color: white!important;
+    font-weight: bold!important;
+    font-family: Arial, Verdana;
+    font-size: 15px;
+}
+
+.forms .input-select option {
+    color: black;
+}

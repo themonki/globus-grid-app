@@ -1,0 +1,23 @@
+#!/bin/perl
+my $logfile="setup-simpleca.log";
+system("touch $logfile");
+
+my ($glob) = glob("globus_simple_ca_*.tar.gz");
+$glob =~ s#globus_simple_ca_(.{8})\.tar\.gz#$1#;
+$simplecahash = $glob;
+my $oldumask = umask;
+umask 022;
+if ( ! -d "/etc/grid-security/certificates" )
+{
+   system("mkdir /etc/grid-security/certificates");
+   if ( $? ne 0 )
+   {
+       print "ERROR:  Unable to create /etc/grid-security/certificates: $!";
+       exit 4;
+   }
+}
+
+system("tar --strip 1 -C /etc/grid-security/certificates -zxf globus_simple_ca_$simplecahash.tar.gz >> $logfile 2>&1");
+system("grid-default-ca -ca $simplecahash >> $logfile 2>&1");
+system("chown myproxy /etc/grid-security/myproxy/ >> $logfile 2>&1");
+

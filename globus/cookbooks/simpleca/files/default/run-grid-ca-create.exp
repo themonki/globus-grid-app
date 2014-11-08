@@ -1,0 +1,46 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+#expect para grid-ca-create
+
+set timeout 20
+set sizeargv [llength $argv]
+set passGrid "globus"
+
+if { $sizeargv != 0} {
+	if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 } {
+		for {set i 0} {$i < [llength $argv]} {incr i 2} {
+			set argvtmp [lindex $argv $i];
+			if {$argvtmp == "-p"} { #passGrid
+				set index [expr $i+1];
+					set passGrid [lindex $argv $index];
+			}
+		}
+	} else {
+		send_user "Error parametros incompletos\n"
+		send_user "Uso: run-grid-ca-create -p passGrid "
+		exit 1
+	}
+	spawn grid-ca-create
+	#Enter PEM pass phrase:
+	send_user "expecting\n"
+	send "$passGrid\r"
+	expect eof {
+		send_user "\nsendpass\n"
+	}
+
+} else {
+	#no pide prhase por defecto es "globus"
+	spawn grid-ca-create -noint
+
+	expect { 
+		 eof {
+		 	send_user "create ca\n"
+		 } 
+	}
+}
+
+
+
+

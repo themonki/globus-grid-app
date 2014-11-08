@@ -1,0 +1,50 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+set timeout 5
+set pass ""
+set sizeargv [llength $argv]
+
+if { $sizeargv == 2} {
+	for {set i 0} {$i < [llength $argv]} {incr i 2} {
+	set argvtmp [lindex $argv $i];
+		if {$argvtmp == "-p"} {#pass
+			set index [expr $i+1];
+			set pass [lindex $argv $index];
+		}
+	}
+} else {
+	send_user "Error parametros incompletos\n"
+	send_user "Uso: expect changepasspsql.exp -p pass\n"
+	exit 1
+}
+
+spawn passwd -d postgres
+
+expect "passwd: Success"
+
+spawn su postgres -c passwd
+
+expect "su postgres -c passwd"
+
+expect {
+	"New password:" {
+		send "$pass\r"
+		expect {
+			"Retype new password:" {
+				send "$pass\r"
+				exp_continue
+			}
+			"passwd: all authentication tokens updated successfully." {
+				send_user "\nse realiza correctamente\n"
+			}
+		}
+	}
+	eof{
+		send_user "\nerror\n"
+		exit 1
+	}
+}
+
+

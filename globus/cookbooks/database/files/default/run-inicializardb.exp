@@ -1,0 +1,106 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+#http://www.pantz.org/software/expect/expect_examples_and_tips.html
+#https://www.centos.org/modules/newbb/viewtopic.php?topic_id=28721
+#http://stackoverflow.com/questions/13199977/speed-of-expect-script
+#http://www.thegeekstuff.com/2011/01/expect-expressions-loops-conditions/
+#http://pensamientosdeotromas.netii.net/2011/07/18/automatiza-todo-lo-que-puedas-con-expect/
+
+
+set timeout 10
+set passwordpostgres "dbpsglobus2013"
+set passwordglobus "globus"
+set location_server "localhost"
+set databasepostgres "template1"
+set databaseglobus "globusdatabase"
+set databaseinit 1
+set pathdatabase "basedatos.sql"
+set pathdatamodel "datamodel.sql"
+set pathregistros "registros.sql"
+set sizeargv [llength $argv]
+
+if { $sizeargv != 0} {
+
+if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 || $sizeargv == 8 || $sizeargv == 10 || $sizeargv == 12 
+ || $sizeargv == 14 || $sizeargv == 16 || $sizeargv == 18 } {
+	for {set i 0} {$i < [llength $argv]} {incr i 2} {
+		set argvtmp [lindex $argv $i];
+		if {$argvtmp == "-pp"} { #postgrespass
+			set index [expr $i+1];
+			set passwordpostgres [lindex $argv $index];
+		} elseif {$argvtmp == "-ps"} {#globuspass
+			set index [expr $i+1];
+			set passwordglobus [lindex $argv $index];
+		} elseif {$argvtmp == "-s"} {#location_server
+			set index [expr $i+1];
+			set location_server [lindex $argv $index];
+		} elseif {$argvtmp == "-dp"} {#databasepostgres
+			set index [expr $i+1];
+			set databasepostgres [lindex $argv $index];
+		} elseif {$argvtmp == "-ds"} {#databaseglobus
+			set index [expr $i+1];
+			set databaseglobus [lindex $argv $index];
+		} elseif {$argvtmp == "-d"} {#databaseinit
+			set index [expr $i+1];
+			set databaseinit [lindex $argv $index];
+		} elseif {$argvtmp == "-pd"} {#pathdatabase
+			set index [expr $i+1];
+			set pathdatabase [lindex $argv $index];
+		} elseif {$argvtmp == "-pm"} {#pathdatamodel
+			set index [expr $i+1];
+			set pathdatamodel [lindex $argv $index];
+		} elseif {$argvtmp == "-pr"} {#pathregistros
+			set index [expr $i+1];
+			set pathregistros [lindex $argv $index];
+		}
+	}
+} else {
+	send_user "Error parametros incompletos\n"
+	send_user "Uso: run-inicializardb.exp -pp pass_postgres -ps pass_globus -s location_server -dp database_postgres -ds database_globus -d databaseinit -pm pathdatamodel -pd pathdatabase -pr pathregistros\n"
+	exit 1
+}
+
+}
+
+if { $databaseinit == 1 } {
+
+	spawn psql -U postgres -h $location_server -d $databasepostgres -f $pathdatabase
+
+	expect {
+		"Password for user postgres:" {
+			send "$passwordpostgres\r"
+			expect eof
+		}
+		eof {
+			send_user "entro DATABASE\r"
+		}
+	}
+}
+
+spawn psql -U globus -h $location_server -d $databaseglobus -f $pathdatamodel
+
+expect {
+	"Password for user globus:" {
+		send "$passwordglobus\r"
+		expect eof
+	}
+	eof { 
+		send_user "entro DATAMODEL\r"
+	}
+}
+
+spawn psql -U globus -h $location_server -d $databaseglobus -f $pathregistros
+
+expect {
+	"Password for user globus:" {
+		send "$passwordglobus\r"
+		expect eof
+	}
+	eof { 
+		send_user "entro REGISTROS\r"
+	}
+}
+
+send_user "\nse realiza correctamente\n"

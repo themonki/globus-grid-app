@@ -1,0 +1,138 @@
+/*
+
+        Author: Martijn Otter
+        Website: http://martijnotter.nl/
+        Email: martijn@otterweb.nl
+        
+*/
+/**
+ * Estilo css styleLogin.css
+ * http://ui-cloud.com/html-login-register-forms/
+*/
+
+body {
+    position: fixed;
+    font-family: Helvetica;
+    background: white;
+    height: 100%;
+    width: 100%;
+}
+.center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+}
+
+h2 {
+    color: #858282;
+}
+
+/* NAVIGATION */
+
+.navLogin {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+}
+
+.navLogin a {
+    color: #4889C2;
+    font-weight: bold;
+    text-decoration: none;
+    opacity: .3;
+    -moz-transition: all .4s;
+}
+
+.navLogin a:hover {
+    opacity: 1;
+}
+
+.navLogin a.focus {
+    opacity: 1;
+}
+
+/* LOGIN & REGISTER FORM */
+
+.formLogin {
+    position: relative;
+    width: 280px;
+    height: auto;
+    /*height: 260px;*/
+
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 0 10px rgba(0,0,0, .4); 
+    text-align: center;
+    padding-top: 1px;
+    padding-bottom: 10px;
+}
+
+/* Register form height */
+.formLogin .register{
+    /*height: 420px;*/
+}
+/* Input fields; Username, Password etc. */
+.formLogin .text-field {
+    border: 1px solid #a6a6a6;
+    width: 230px;
+    height: 40px;
+    border-radius: 3px;
+    margin-top: 10px;
+    padding-left: 10px;
+    color: #6c6c6c;
+    background: #fcfcfc;
+    outline: none;
+}
+
+.formLogin .text-field:focus {
+    box-shadow: inset 0 0 2px rgba(0,0,0, .3);
+    color: #a6a6a6;
+    background: white;
+}
+
+.formLogin .button {																				/* Submit button */
+    border-radius: 3px;
+    border: 1px solid #787878;
+    box-shadow: inset 0 1px 0 #787878;
+    width: 242px;
+    height: 40px;
+    margin-top: 20px;
+
+    background: linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -o-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -moz-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -webkit-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+    background: -ms-linear-gradient(bottom, #3c3c3c 0%, #787878 100%);
+
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 -1px 0 #336895;
+
+    font-size: 13px;
+}
+
+.formLogin .button:hover {
+    background: linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -o-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -moz-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -webkit-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+    background: -ms-linear-gradient(bottom, #dedede 0%, #aaaaac 100%);
+}
+
+.formLogin .button:active {
+    background: linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -o-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -moz-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -webkit-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+    background: -ms-linear-gradient(bottom, #5BA7E9 0%, #4889C2 100%);
+
+    box-shadow: inset 0 0 2px rgba(0,0,0, .3), 0 1px 0 white;
+}
+
+.formLogin .error {
+    margin: 10px 10px 0px 10px;
+}

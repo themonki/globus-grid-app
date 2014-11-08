@@ -1,0 +1,37 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+set sizeargv [llength $argv]
+set pass "vagrant"
+set hostname "mg.globustest.org"
+
+if { $sizeargv != 0} {
+
+	if { $sizeargv == 2 || $sizeargv == 4} {
+		for {set i 0} {$i < [llength $argv]} {incr i 2} {
+			set argvtmp [lindex $argv $i];
+			if {$argvtmp == "-p"} {#pass
+				set index [expr $i+1];
+				set pass [lindex $argv $index];
+			} elseif {$argvtmp == "-h"} {#hostname
+				set index [expr $i+1];
+				set hostname [lindex $argv $index];
+			}
+		}
+	} else {
+		send_user "Error parametros incompletos\n"
+		send_user "Uso: run-accessgrid -p pass -h hostname"
+		exit 1
+	}
+}
+
+spawn myproxy-logon -s $hostname
+
+expect {
+	"Enter MyProxy pass phrase:" {
+		send_user "$pass\r"
+	}
+}
+
+send_user "realizado correctamente\n"

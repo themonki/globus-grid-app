@@ -1,0 +1,93 @@
+#!/usr/bin/expect
+# -*- mode: tcl -*-
+# vi: set ft=tcl :
+
+#expect para grid-cert-request
+set sizeargv [llength $argv]
+set pass "vagrant"
+set name "VagrantUser"
+set prefix "user"
+set timeout 2
+
+if { $sizeargv != 0} {
+	if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 } {
+		for {set i 0} {$i < [llength $argv]} {incr i 2} {
+			set argvtmp [lindex $argv $i];
+			if {$argvtmp == "-p"} { #pass
+				set index [expr $i+1];
+				set pass [lindex $argv $index];
+			} elseif {$argvtmp == "-n"} {#name
+				set index [expr $i+1];
+				set name [lindex $argv $index];
+			} elseif {$argvtmp == "-f"} {#prefix
+				set index [expr $i+1];
+				set prefix [lindex $argv $index];
+			}
+		}
+	} else {
+		send_user "Error parametros incompletos\n"
+		send_user "Uso: run-grid-cert-request -n name -p password -f prefix"
+		exit 1
+	}
+}
+
+#expect dont work
+
+#Enter your name, e.g., John Smith:
+#A certificate request and private key is being created.
+#You will be asked to enter a PEM pass phrase.
+#This pass phrase is akin to your account password, 
+#and is used to protect your key file.
+#If you forget your pass phrase, you will need to
+#obtain a new certificate.
+
+#Generating a 1024 bit RSA private key
+#..++++++
+#..................++++++
+#writing new private key to '/home/vagrant/.globus/userkey.pem'
+#Enter PEM pass phrase:
+#Verifying - Enter PEM pass phrase:
+#-----
+#You are about to be asked to enter information that will be incorporated
+#into your certificate request.
+#What you are about to enter is what is called a Distinguished Name or a DN.
+#There are quite a few fields but you can leave some blank
+#For some fields there will be a default value,
+#If you enter '.', the field will be left blank.
+#-----
+#Level 0 Organization [Grid]:Level 0 Organizational Unit [GlobusTest]:Level 1 Organizational Unit [simpleCA-mg2.globustest.org]:Level 2 Organizational Unit [local]:Name (E.g., John M. Smith) []:
+
+#A private key and a certificate request has been generated with the subject:
+
+#/O=Grid/OU=GlobusTest/OU=simpleCA-mg2.globustest.org/OU=local/CN=VagrantUser
+
+#If the CN=VagrantUser is not appropriate, rerun this
+#script with the -force -cn "Common Name" options.
+
+#Your private key is stored in /home/vagrant/.globus/userkey.pem
+#Your request is stored in /home/vagrant/.globus/usercert_request.pem
+
+#Please e-mail the request to the Globus Simple CA globus@mg2.globustest.org
+#You may use a command similar to the following:
+
+#  cat /home/vagrant/.globus/usercert_request.pem | mail globus@mg2.globustest.org
+
+#Only use the above if this machine can send AND receive e-mail. if not, please
+#mail using some other method.
+
+#Your certificate will be mailed to you within two working days.
+#If you receive no response, contact Globus Simple CA at globus@mg2.globustest.org
+
+spawn grid-cert-request -prefix $prefix -cn $name
+
+#Enter PEM pass phrase:
+send "$pass\r"
+
+expect eof
+
+#Verifying - Enter PEM pass phrase:
+send "$pass\r"
+
+expect eof
+
+send_user "request user done\n"
