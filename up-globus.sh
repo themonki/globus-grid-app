@@ -5,7 +5,7 @@
 cd machineglobus
 
 if [ $# = 1 ] ; then
-  if [ $1 = "mg2" ] || [ $1 = "mgwn2" ]; then
+  if [ $1 = "mg" ] || [ $1 = "mgwn1" ]; then
     
     echo "Iniciando la maquina $1"
 
@@ -17,9 +17,9 @@ if [ $# = 1 ] ; then
 else
   echo "Iniciando las maquinas"
 
-  vagrant reload --no-provision mg2
+  vagrant reload --no-provision mg
 
-  vagrant reload --no-provision mgwn2
+  vagrant reload --no-provision mgwn1
 
   echo "maquinas iniciadas"
 

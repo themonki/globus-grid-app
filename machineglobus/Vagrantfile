@@ -9,7 +9,7 @@ USE_SHARE_FOLDER = true
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	
-	config.vm .define :mgwn2 do |node|
+	config.vm .define :mgwn1 do |node|
 		node.vm.box = "centos64"
 		#node.vm.boot_mode = :gui
 		#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
@@ -25,14 +25,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				"recipe[confighost::hostconfigurenode]",
 				"recipe[chefInstall::install]",
 				"recipe[preinstall]" ],
-				:host_name => "mgwn2.globustest.org",
-				:alias => "mgwn2",
+				:host_name => "mgwn1.globustest.org",
+				:alias => "mgwn1",
 				:use_share_folder => USE_SHARE_FOLDER
 			})
 		end
 	end
 	
-	config.vm .define :mg2 do |node|
+	config.vm .define :mg do |node|
 		node.vm.box = "centos64"
 		#node.vm.boot_mode = :gui
 		#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
@@ -52,9 +52,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 				"recipe[apache]", "recipe[apache::configure]",
 				"recipe[php]", "recipe[php::installdebug]",
 				"recipe[java7-64]", "recipe[tomcat7]"],
-				:host_name => "mg2.globustest.org",
-				:hostslaves => ["mgwn2"], #lista de todos los nodos
-				:alias => "mg2",
+				:host_name => "mg.globustest.org",
+				:hostslaves => ["mgwn1"], #lista de todos los nodos
+				:alias => "mg",
 				:use_share_folder => USE_SHARE_FOLDER
 			})
 		end

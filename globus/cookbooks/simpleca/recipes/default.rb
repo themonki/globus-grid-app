@@ -50,22 +50,28 @@ end
 #instalar simplesa
 
 execute "install simplesa on globus" do
-	command "sudo -H -E -u globus expect run-grid-ca-create.exp"
+	command "sudo -H -E -u globus expect run-grid-ca-create.exp >> result"
 	user "vagrant"
 	cwd "/tmp"
 	action :run
 end
 
-#PUEDE VARIAR
-#indicamos los certificados que seran usados para firmar
-execute "certificados por defecto" do
-	command "grid-default-ca -ca b83525ab"
-	user "root"
+execute "obtener el hash" do
+	command "grep 'globus_simple_ca_' result | cut -d'_' -f4 | cut -d'.' -f1 > hash"
+	user "vagrant"
 	cwd "/tmp"
 	action :run
 end
 
-
+#PUEDE VARIAR EL HASH
+#Por eso se utiliza un metodo nuevo
+#indicamos los certificados que seran usados para firmar
+execute "certificados por defecto" do
+	command "read VART < hash;  grid-default-ca -ca $VART"
+	user "root"
+	cwd "/tmp"
+	action :run
+end
 
 #################################################################################
 ##hostcert
@@ -169,7 +175,7 @@ execute "cp tmp signed" do
 end
 
 #agregar al gridmapfile
-#grid-mapfile-add-entry -dn /O=Grid/OU=GlobusTest/OU=simpleCA-mg2.globustest.org/OU=local/CN=VagrantUser -ln vagrant
+#grid-mapfile-add-entry -dn /O=Grid/OU=GlobusTest/OU=simpleCA-mg.globustest.org/OU=local/CN=VagrantUser -ln vagrant
 execute "gridmapfile vagrant" do
 	command "grid-mapfile-add-entry -dn /O=Grid/OU=GlobusTest/OU=simpleCA-#{node[:host_name]}/OU=local/CN=#{node[:name]} -ln #{node[:user_name]}"
 	user "root"

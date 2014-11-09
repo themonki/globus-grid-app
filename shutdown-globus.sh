@@ -5,7 +5,7 @@
 cd machineglobus
 
 if [ $# = 1 ] ; then
-  if [ $1 = "mg2" ] || [ $1 = "mgwn2" ]; then
+  if [ $1 = "mg" ] || [ $1 = "mgwn1" ]; then
     
     echo "Apagando la maquina $1"
 
@@ -17,9 +17,9 @@ if [ $# = 1 ] ; then
 else
   echo "Apagando las maquinas"
 
-  vagrant halt mg2
+  vagrant halt mg
 
-  vagrant halt mgwn2
+  vagrant halt mgwn1
 
   echo "maquinas apagadas"
 

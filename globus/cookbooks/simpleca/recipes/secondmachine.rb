@@ -73,9 +73,17 @@ execute "install certificates" do
 	action :run
 end
 
+#Puede variar el hash pero este viene con el nombre del archivo globus-simple-ca
+execute "obtener el hash" do
+	command "ls globus*.rpm | cut -d'-' -f4 > hash"
+	user "root"
+	cwd "/tmp"
+	action :run
+end
+
 #indicamos los certificados que seran usados para firmar
 execute "certificados por defecto" do
-	command "grid-default-ca -ca b83525ab"
+	command "read VART < hash;  grid-default-ca -ca $VART"
 	user "root"
 	cwd "/tmp"
 	action :run
@@ -92,7 +100,7 @@ execute "request host" do
 	action :run
 end
 
-#mover a tmp para que mg2 lo pueda recibir
+#mover a tmp para que mg lo pueda recibir
 execute "enviar requesthost" do
 	command "cp /etc/grid-security/hostcert_request.pem /tmp"
 	user "vagrant"

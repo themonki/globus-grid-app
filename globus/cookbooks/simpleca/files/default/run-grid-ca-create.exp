@@ -9,7 +9,7 @@ set sizeargv [llength $argv]
 set passGrid "globus"
 
 if { $sizeargv != 0} {
-	if { $sizeargv == 2 || $sizeargv == 4 || $sizeargv == 6 } {
+	if { $sizeargv == 2 } {
 		for {set i 0} {$i < [llength $argv]} {incr i 2} {
 			set argvtmp [lindex $argv $i];
 			if {$argvtmp == "-p"} { #passGrid

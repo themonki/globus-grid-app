@@ -64,7 +64,7 @@ class JobManager {
      *
      * El nombre del host a donde se conecta por medio de PHPSECLIB.
      */
-    private $hostConnect = "mg2";
+    private $hostConnect = "mg";
 
     /**
      *

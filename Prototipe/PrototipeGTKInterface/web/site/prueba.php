@@ -89,7 +89,7 @@ include_once( PWD_CONTROLADOR . '/jobSubmission/JobManager.php' );
 
 //$user = "vagrant";
 //$passuser = "vagrant";
-//$host = "mg2";
+//$host = "mg";
 //$ssh = new Net_SSH2($host);
 //if (!$ssh->login($user, $passuser)) {
 //    exit('Login Failed');
@@ -131,7 +131,7 @@ if (isset($_GET["script"]) && $_GET["script"] == true) {
 ////        $output = $ssh->exec('ls -la');
 ////        print $output;
 //        print "<br/>**************************************<br/>";
-////        [vagrant@mg2 tmp]$
+////        [vagrant@mg tmp]$
 //        $output = $ssh->read('[' . $user . '@' . $host . ' ~]$');
 ////        print $output;
 //        print "<br/>";

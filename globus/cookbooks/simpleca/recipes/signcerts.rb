@@ -1,5 +1,5 @@
 
-#enviar a globus en mg2 el hostcert_request.pem
+#enviar a globus en mg el hostcert_request.pem
 node[:slaves].each do |slave|
 	execute "enviar requesthost" do
 		command "scp vagrant@#{slave}:/tmp/hostcert_request.pem /tmp/#{slave}-hostcert_request.pem"

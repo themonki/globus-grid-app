@@ -2,6 +2,6 @@
   "user_name" : "vagrant",
 	"pass_user" : "vagrant",
 	"name" : "VagrantUser" ,
-	"host_name_master" : "mg2.globustest.org",
+	"host_name_master" : "mg.globustest.org",
 	"run_list": ["recipe[simpleca::configsecondmachine]" ]
 }
