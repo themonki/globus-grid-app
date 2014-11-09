@@ -1,9 +1,11 @@
 #Netbeans
-*private
+**nbproject/private
 
 *.p12
 
 **/.vagrant/
+**api
+
 ##################
 
 # Paquetes de instalacion #

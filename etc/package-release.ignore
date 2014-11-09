@@ -1,0 +1,10 @@
+**.vagrant
+**tmp-release
+**log.txt
+v.*.tar.gz
+**package-release.sh
+**package-release.ignore
+**nbproject/private
+**app/*.tar.gz
+**API
+
