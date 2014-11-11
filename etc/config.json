@@ -1,0 +1,26 @@
+{
+	"USE_SHARE_FOLDER" : "true",
+	"HOST_IP" : "172.18.0.1",
+	"MACHINE_MASTER" : {
+		"node_name" : "mg",
+		"vm_name" : "globus-master",
+		"ip" : "172.18.0.21",
+		"host_name" : "mg.globustest.org",
+		"alias" : "mg",
+		"user_name" : "vagrant",
+		"pass_user" : "vagrant",
+		"name" : "VagrantUser"
+	},
+	"MACHINE_SLAVES" : {
+		"slave1" : {
+			"node_name" : "mgwn1",
+			"vm_name" : "globus-client1",
+			"ip" : "172.18.0.22",
+			"host_name" : "mgwm1.globustest.org",
+			"alias" : "mgwn1",
+			"user_name" : "vagrant",
+			"pass_user" : "vagrant",
+			"name" : "VagrantUser"
+		}
+	}
+}

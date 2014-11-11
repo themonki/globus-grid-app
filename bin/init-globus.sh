@@ -4,38 +4,31 @@
 
 DIR_PWD="$(pwd)"
 DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $DIR_PWD
-DIR_BIN=$DIR_SOURCE
-DIR_LOCAL=$DIR_SOURCE/../local
-cd $DIR_LOCAL
-DIR_LOCAL="$(pwd)"
-DIR_ETC=$DIR_SOURCE/../etc
-cd $DIR_ETC
-DIR_ETC="$(pwd)"
-cd $DIR_PWD
+. $DIR_SOURCE/env.sh
 
 #Si se emplea el share folder no se necesesita confirgurar
-SHARE_FOLDER_ACTIVE="$(grep -lir 'USE_SHARE_FOLDER.*=.*true' $DIR_LOCAL/Vagrantfile)"
+#SHARE_FOLDER_ACTIVE="$(grep -lir 'USE_SHARE_FOLDER.*=.*true' $DIR_LOCAL/Vagrantfile)"
+SHARE_FOLDER_ACTIVE=$(GetElementConfig "['USE_SHARE_FOLDER']")
 
-if [ -z "$SHARE_FOLDER_ACTIVE" ]; then
-  FILE=$DIR_LOCAL/cookbooks/confighost/attributes/default.rb
-  profile=false;
-  if [ -e $FILE ]; then
-    while read line
-    do
-      if [[ "$line" == *"$HOME"* ]]
-        then
-          profile=true;       
-      fi
-    done < $FILE
-    if [ $profile == false ]; then
-      echo "El perfil por defecto no corresponde al usuario actual, actualice con manage-user-profile.sh";
-      exit;
-    fi
-  else
-    echo "Debe generar primero el perfil por defecto del usuario con manage-user-profile.sh";
-    exit;
-  fi
+if [ $SHARE_FOLDER_ACTIVE != "true" ]; then
+	FILE=$DIR_LOCAL/cookbooks/confighost/attributes/default.rb
+	profile=false;
+	if [ -e $FILE ]; then
+		while read line
+		do
+			if [[ "$line" == *"$HOME"* ]]
+				then
+					profile=true;
+			fi
+		done < $FILE
+		if [ $profile == false ]; then
+			echo "El perfil por defecto no corresponde al usuario actual, actualice con manage-user-profile.sh";
+			exit;
+		fi
+	else
+		echo "Debe generar primero el perfil por defecto del usuario con manage-user-profile.sh";
+		exit;
+	fi
 fi
 
 pathSSH=$HOME/.ssh/id_rsa
@@ -47,9 +40,19 @@ touch $LOG_FILE
 
 cd $DIR_LOCAL
 
-vagrant up mgwn1 --color >> $LOG_FILE
+tam=$(CountElementConfig "['MACHINE_SLAVES']")
 
-vagrant up mg --color >> $LOG_FILE
+#slaves
+for (( c=1; c<=$tam; c++ ))
+do
+	name="slave$c"
+	node_name=$(GetElementConfig "['MACHINE_SLAVES']['$name']['node_name']")
+	vagrant up $name_name --color >> $LOG_FILE
+done
+
+#master
+master_name=$(GetElementConfig "['MACHINE_MASTER']['node_name']")
+vagrant up $master_name --color >> $LOG_FILE
 
 cd $DIR_PWD
 
@@ -71,29 +74,72 @@ fi
 
 cd $DIR_LOCAL
 
-expect $DIR_BIN/configssh.exp -u vagrant -p vagrant -h 172.18.0.21 -l ${pathSSH} >> $LOG_FILE
-expect $DIR_BIN/configssh.exp -u vagrant -p vagrant -h 172.18.0.22 -l ${pathSSH} >> $LOG_FILE
+#master
+musr=$(GetElementConfig "['MACHINE_MASTER']['user_name']")
+musr_pass=$(GetElementConfig "['MACHINE_MASTER']['pass_user']")
+mip=$(GetElementConfig "['MACHINE_MASTER']['ip']")
+expect $DIR_BIN/configssh.exp -u $musr -p $musr_pass -h $mip -l ${pathSSH} >> $LOG_FILE
+
+#slaves
+for (( c=1; c<=$tam; c++ ))
+do
+	name="slave$c"
+	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
+	susr_pass=$(GetElementConfig "['MACHINE_SLAVES']['$name']['pass_user']")
+	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
+	expect $DIR_BIN/configssh.exp -u $susr -p $susr_pass -h $sip -l ${pathSSH} >> $LOG_FILE
+done
 
 echo "garantizado acceso ssh a las maquinas virtuales"
 
-knife solo cook vagrant@172.18.0.21 >> $LOG_FILE
-knife solo cook vagrant@172.18.0.22 >> $LOG_FILE
+#slaves
+for (( c=1; c<=$tam; c++ ))
+do
+	name="slave$c"
+	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
+	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
+	knife solo cook $susr@$sip nodes/$sip.json --no-chef-check --no-berkshelf >> $LOG_FILE
+done
 
-echo "setup simpleca, hostcert y usercert for vagrant"
+#master
+knife solo cook $musr@$mip nodes/$mip.json --no-chef-check --no-berkshelf >> $LOG_FILE
 
-knife solo cook vagrant@172.18.0.21 nodes/initsimpleca.json >> $LOG_FILE
-knife solo cook vagrant@172.18.0.22 nodes/initsimplecasecondmachine.json >> $LOG_FILE
-knife solo cook vagrant@172.18.0.21 nodes/signsimpleca.json >> $LOG_FILE
-knife solo cook vagrant@172.18.0.22 nodes/configcertnodes.json >> $LOG_FILE
+echo "setup simpleca, hostcert y usercert para $musr"
+
+#master
+scp nodes/initsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/initsimpleca.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+#slaves
+for (( c=1; c<=$tam; c++ )) 
+do
+	name="slave$c"
+	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
+	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
+	scp nodes/initsimplecasecondmachine.json $susr@$sip:/home/$susr/chef-solo/dna.json
+	knife solo cook $susr@$sip nodes/initsimplecasecondmachine.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+done
+#master
+scp nodes/signsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/signsimpleca.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+#slaves
+for (( c=1; c<=$tam; c++ )) 
+do
+	name="slave$c"
+	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
+	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
+	scp nodes/configcertnodes.json $susr@$sip:/home/$susr/chef-solo/dna.json
+	knife solo cook $susr@$sip nodes/configcertnodes.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+done
 
 echo "globus instalado"
 
 echo "Preparando configuracion de aplicacion"
-
-knife solo cook vagrant@172.18.0.21 nodes/configSSL.json >> $LOG_FILE
-knife solo cook vagrant@172.18.0.21 nodes/database.json >> $LOG_FILE
-
-knife solo cook vagrant@172.18.0.21 nodes/app.json >> $LOG_FILE
+scp nodes/configSSL.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/configSSL.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+scp nodes/database.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/database.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+scp nodes/app.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/app.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 
 echo "Aplicación generada"
 
@@ -101,10 +147,10 @@ cd $DIR_PWD
 
 $DIR_BIN/getCredencial.sh >> $LOG_FILE
 
-$DIR_BIN/restart-globus.sh >>  $LOG_FILE
+$DIR_BIN/restart-globus.sh >> $LOG_FILE
 
 echo "Importe al navegador el archivo usercred.p12 (no tiene contraseña)."
-echo "Ingrese al Grid: https://172.18.0.21/app/"
+echo "Ingrese al Grid: https://$mip/app/"
 echo "email: vagrant@gmail.com"
 echo "Contraseña: Vagrant123"
 echo ""

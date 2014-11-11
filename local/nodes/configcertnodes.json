@@ -1,5 +1,5 @@
 {
-  "user_name" : "vagrant",
+	"user_name" : "vagrant",
 	"pass_user" : "vagrant",
 	"name" : "VagrantUser" ,
 	"host_name_master" : "mg.globustest.org",

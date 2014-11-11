@@ -1,63 +1,56 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+#Cargar los valores de configuracion
+env_file = File.dirname(__FILE__) + "/../etc/env.rb"
+default_env_file = ENV['ENV_FILE']
+#print "env = "
+#puts default_env_file
+#print "file = "
+#puts env_file
+require default_env_file != nil && File.exists?(default_env_file) ? default_env_file : env_file
+
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.require_version ">= 1.6.5"
 
-USE_SHARE_FOLDER = true
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-	
-	config.vm .define :mgwn1 do |node|
-		node.vm.box = "centos64"
-		#node.vm.boot_mode = :gui
-		#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
-		node.vm.network "private_network", ip: "172.18.0.22"
-		node.vm.provider "virtualbox" do |vb|
-			vb.customize ["modifyvm", :id, "--memory", 400, "--cpus", 2, "--name", "globus-client1" ]
-		end
-		node.vm.provision :chef_solo do |chef|
-			chef.cookbooks_path = "cookbooks"
-			chef.json.merge!({
-				:run_list => [ "recipe[confighost::preinstall]",
-				"recipe[confighost::hostname]",
-				"recipe[confighost::hostconfigurenode]",
-				"recipe[chefInstall::install]",
-				"recipe[preinstall]" ],
-				:host_name => "mgwn1.globustest.org",
-				:alias => "mgwn1",
-				:use_share_folder => USE_SHARE_FOLDER
-			})
+	MACHINE_SLAVES.each do |name, slave|
+		config.vm .define slave[:node_name] do |node|
+			node.vm.box = "centos64"
+			#node.vm.boot_mode = :gui
+			#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
+			node.vm.network "private_network", ip: slave[:ip]
+			node.vm.provider "virtualbox" do |vb|
+				vb.customize ["modifyvm", :id, "--memory", 400, "--cpus", 2, "--name", slave[:vm_name] ]
+			end
+			node.vm.provision :chef_solo do |chef|
+				chef.cookbooks_path = "cookbooks"
+				chef.json.merge!({
+					:run_list => [ "recipe[confighost::preinstall]",
+					"recipe[chefInstall::install]"]
+				})
+			end
+			node.vm.synced_folder "../etc/", "/globus-grid-app/etc"
 		end
 	end
 	
-	config.vm .define :mg do |node|
+	config.vm .define MACHINE_MASTER[:node_name] do |node|
 		node.vm.box = "centos64"
 		#node.vm.boot_mode = :gui
 		#node.vm.network "public_network", bridge: "wlan0" #"eth0" #quitar bridge para que vagrant pregunte cual interfaz utilizar
-		node.vm.network "private_network", ip: "172.18.0.21"
+		node.vm.network "private_network", ip: MACHINE_MASTER[:ip]
 		node.vm.provider "virtualbox" do |vb|
-			vb.customize ["modifyvm", :id, "--memory", 400, "--cpus", 2, "--name", "globus-master" ]
+			vb.customize ["modifyvm", :id, "--memory", 400, "--cpus", 2, "--name", MACHINE_MASTER[:vm_name] ]
 		end
 		node.vm.provision :chef_solo do |chef|
 			chef.cookbooks_path = "cookbooks"
 			chef.json.merge!({
 				:run_list => [ "recipe[confighost::preinstall]",
-				"recipe[confighost::hostname]",
-				"recipe[confighost::hostconfiguremaster]",
-				"recipe[chefInstall::install]",
-				"recipe[preinstall]", "recipe[postgresql]",
-				"recipe[postgresql::configure]",
-				"recipe[apache]", "recipe[apache::configure]",
-				"recipe[php]", "recipe[php::installdebug]",
-				"recipe[java7-64]", "recipe[tomcat7]"],
-				:host_name => "mg.globustest.org",
-				:hostslaves => ["mgwn1"], #lista de todos los nodos
-				:alias => "mg",
-				:use_share_folder => USE_SHARE_FOLDER
+					"recipe[chefInstall::install]"]
 			})
 		end
+		node.vm.synced_folder "../etc/", "/globus-grid-app/etc"
 	end
 	
 end

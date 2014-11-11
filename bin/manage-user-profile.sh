@@ -4,21 +4,14 @@
 
 DIR_PWD="$(pwd)"
 DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-cd $DIR_PWD
-DIR_BIN=$DIR_SOURCE
-DIR_LOCAL=$DIR_SOURCE/../local
-cd $DIR_LOCAL
-DIR_LOCAL="$(pwd)"
-DIR_ETC=$DIR_SOURCE/../etc
-cd $DIR_ETC
-DIR_ETC="$(pwd)"
-cd $DIR_PWD
+. $DIR_SOURCE/env.sh
 
 PATH_PROFILE=$DIR_LOCAL/cookbooks/confighost/attributes
 #PATH_SCRIPT=$(dirname $(readlink -f $0))
 PATH_FILES=$DIR_LOCAL/cookbooks/confighost/files/default
 export PATH_CONFIGHOST=$PATH_FILES
-IP="172.18.0.1"
+default_IP=$(GetElementConfig "['HOST_IP']")
+IP=$default_IP
 VARUSER="$(whoami)"
 
 file_exists() {
@@ -52,7 +45,7 @@ function print_help {
 	printf '\t%s\n' "Opciones para Crear:" ;
 	printf '%s\n' "";
 	printf '\t\t%s\n' "-n	NAME indica el nombre del perfil.";
-	printf '\t\t%s\n' "-i	IP indica el la ip del equipo actual del perfil. Por defecto 172.18.0.1.";
+	printf '\t\t%s\n' "-i	IP indica el la ip del equipo actual del perfil. Por defecto $default_IP.";
 	printf '\t\t%s\n' "-p	PASS indica el PASS del USER";
 	printf '\t\t%s\n' "-u	USER indica el USER de la máquina actual. Por defecto el usuario actual.";
 	printf '%s\n' "" ;
