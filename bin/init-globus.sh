@@ -56,9 +56,7 @@ vagrant up $master_name --color >> $LOG_FILE
 
 cd $DIR_PWD
 
-$DIR_BIN/clean.sh
-
-echo "maquinas levantadas"
+echo "Maquinas levantadas"
 
 ##Se actualiza la app
 appPath=$DIR_LOCAL/app
@@ -90,7 +88,7 @@ do
 	expect $DIR_BIN/configssh.exp -u $susr -p $susr_pass -h $sip -l ${pathSSH} >> $LOG_FILE
 done
 
-echo "garantizado acceso ssh a las maquinas virtuales"
+echo "Garantizado acceso ssh a las maquinas virtuales"
 
 #slaves
 for (( c=1; c<=$tam; c++ ))
@@ -104,7 +102,7 @@ done
 #master
 knife solo cook $musr@$mip nodes/$mip.json --no-chef-check --no-berkshelf >> $LOG_FILE
 
-echo "setup simpleca, hostcert y usercert para $musr"
+echo "Configurando SimpleCA, hostcert y usercert para $musr"
 
 #master
 scp nodes/initsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
@@ -131,13 +129,9 @@ do
 	knife solo cook $susr@$sip nodes/configcertnodes.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 done
 
-echo "globus instalado"
+echo "Globus instalado y configurado"
 
 echo "Preparando configuracion de aplicacion"
-scp nodes/configSSL.json $musr@$mip:/home/$musr/chef-solo/dna.json
-knife solo cook $musr@$mip nodes/configSSL.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
-scp nodes/database.json $musr@$mip:/home/$musr/chef-solo/dna.json
-knife solo cook $musr@$mip nodes/database.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 scp nodes/app.json $musr@$mip:/home/$musr/chef-solo/dna.json
 knife solo cook $musr@$mip nodes/app.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 
@@ -148,6 +142,8 @@ cd $DIR_PWD
 $DIR_BIN/getCredencial.sh >> $LOG_FILE
 
 $DIR_BIN/restart-globus.sh >> $LOG_FILE
+
+$DIR_BIN/clean.sh >> $LOG_FILE
 
 echo "Importe al navegador el archivo usercred.p12 (no tiene contraseña)."
 echo "Ingrese al Grid: https://$mip/app/"
