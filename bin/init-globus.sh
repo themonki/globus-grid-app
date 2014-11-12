@@ -31,6 +31,11 @@ if [ $SHARE_FOLDER_ACTIVE != "true" ]; then
 	fi
 fi
 
+echo ""
+echo "Generando configuración a partir de $CONFIG_FILE"
+$DIR_BIN/configure.sh
+echo ""
+
 pathSSH=$HOME/.ssh/id_rsa
 
 LOG_FILE=$DIR_PWD/log.txt
@@ -41,6 +46,8 @@ touch $LOG_FILE
 cd $DIR_LOCAL
 
 tam=$(CountElementConfig "['MACHINE_SLAVES']")
+
+echo "Iniciando maquinas virtuales con Vagrant"
 
 #slaves
 for (( c=1; c<=$tam; c++ ))
@@ -89,51 +96,54 @@ do
 done
 
 echo "Garantizado acceso ssh a las maquinas virtuales"
-
+#############################################################################################
 #slaves
 for (( c=1; c<=$tam; c++ ))
 do
 	name="slave$c"
 	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
 	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
-	knife solo cook $susr@$sip nodes/$sip.json --no-chef-check --no-berkshelf >> $LOG_FILE
+	name_file=$name".json"
+	knife solo cook $susr@$sip nodes/$name_file --no-chef-check --no-berkshelf >> $LOG_FILE
 done
 
 #master
-knife solo cook $musr@$mip nodes/$mip.json --no-chef-check --no-berkshelf >> $LOG_FILE
+knife solo cook $musr@$mip nodes/master.json --no-chef-check --no-berkshelf >> $LOG_FILE
 
 echo "Configurando SimpleCA, hostcert y usercert para $musr"
 
 #master
-scp nodes/initsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
-knife solo cook $musr@$mip nodes/initsimpleca.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+scp nodes/master_initsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/master_initsimpleca.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 #slaves
 for (( c=1; c<=$tam; c++ )) 
 do
 	name="slave$c"
 	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
 	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
-	scp nodes/initsimplecasecondmachine.json $susr@$sip:/home/$susr/chef-solo/dna.json
-	knife solo cook $susr@$sip nodes/initsimplecasecondmachine.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+	name_file=$name"_initsimplecasecondmachine.json"
+	scp nodes/$name_file $susr@$sip:/home/$susr/chef-solo/dna.json
+	knife solo cook $susr@$sip nodes/$name_file --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 done
 #master
-scp nodes/signsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
-knife solo cook $musr@$mip nodes/signsimpleca.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+scp nodes/master_signsimpleca.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/master_signsimpleca.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 #slaves
 for (( c=1; c<=$tam; c++ )) 
 do
 	name="slave$c"
 	susr=$(GetElementConfig "['MACHINE_SLAVES']['$name']['user_name']")
 	sip=$(GetElementConfig "['MACHINE_SLAVES']['$name']['ip']")
-	scp nodes/configcertnodes.json $susr@$sip:/home/$susr/chef-solo/dna.json
-	knife solo cook $susr@$sip nodes/configcertnodes.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+	name_file=$name"_configcertnodes.json"
+	scp nodes/$name_file $susr@$sip:/home/$susr/chef-solo/dna.json
+	knife solo cook $susr@$sip nodes/$name_file --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 done
 
 echo "Globus instalado y configurado"
 
 echo "Preparando configuracion de aplicacion"
-scp nodes/app.json $musr@$mip:/home/$musr/chef-solo/dna.json
-knife solo cook $musr@$mip nodes/app.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
+scp nodes/master_app.json $musr@$mip:/home/$musr/chef-solo/dna.json
+knife solo cook $musr@$mip nodes/master_app.json --no-chef-check --no-berkshelf --no-sync >> $LOG_FILE
 
 echo "Aplicación generada"
 

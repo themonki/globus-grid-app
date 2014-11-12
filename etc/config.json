@@ -22,5 +22,19 @@
 			"pass_user" : "vagrant",
 			"name" : "VagrantUser"
 		}
+	},
+	"USER_APP" : {
+		"name" : "Vagrant User",
+		"email" : "vagrant@gmail.com",
+		"password" : "Vagrant123",
+		"usersystem" : "vagrant",
+		"serial" : "02",
+		"issue" : "/O=Grid/OU=GlobusTest/OU=simpleCA-mg.globustest.org/CN=Globus Simple CA",
+		"issue_part1" : "/O=Grid/OU=GlobusTest/OU=simpleCA-",
+		"issue_part2" : "/CN=Globus Simple CA",
+		"keypass" : "vagrant",
+		"keypath" : "/home/vagrant/.globus/userkey.pem",
+		"certpath" : "/home/vagrant/.globus/usercert.pem",
+		"proxypath" : "/home/vagrant/.globus/x509up_u500"
 	}
 }

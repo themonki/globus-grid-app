@@ -19,7 +19,7 @@ MACHINE_MASTER = {
 	:host_name => data["MACHINE_MASTER"]["host_name"],
 	:alias => data["MACHINE_MASTER"]["alias"],
 	:user_name => data["MACHINE_MASTER"]["user_name"],
-	:pass_user => data["MACHINE_MASTER"]["pass_name"],
+	:pass_user => data["MACHINE_MASTER"]["pass_user"],
 	:name => data["MACHINE_MASTER"]["name"]
 	}
 MACHINE_SLAVES = {}
