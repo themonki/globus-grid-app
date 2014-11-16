@@ -1,0 +1,12 @@
+{
+  "slaves": [
+    "mgwn1"
+  ],
+  "user_name": "vagrant",
+  "pass_user": "vagrant",
+  "name": "VagrantUser",
+  "host_name": "mg.globustest.org",
+  "run_list": [
+    "recipe[simpleca]"
+  ]
+}

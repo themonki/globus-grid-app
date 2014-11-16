@@ -11,10 +11,17 @@ NAME="app"
 
 $DIR_BIN/package-app.sh -n $NAME -l $SAVE_FILE
 
-mkdir -p $DIR_LOCAL/cookbooks/app/files/default
+DIR_APP="$DIR_LOCAL/cookbooks/app/files/default"
 
-rm -rf $DIR_LOCAL/cookbooks/app/files/default/app.tar.gz
+if [ -e "$DIR_APP" ];then
 
-mv $SAVE_FILE/$NAME.tar.gz $DIR_LOCAL/cookbooks/app/files/default/
+	rm -rf "$DIR_APP/app.tar.gz"
+	echo "Borrada"
+
+else
+	mkdir -p "$DIR_APP"
+fi
+
+mv "$SAVE_FILE/$NAME.tar.gz" "$DIR_APP/"
 
 echo "Aplicación actualizada"

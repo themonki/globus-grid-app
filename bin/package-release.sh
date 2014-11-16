@@ -16,9 +16,9 @@ function print_help {
 	printf '\t%s\n' "Opciones:" ;
 	printf '%s\n' "" ;
 	printf '\t\t%s\n' "-n	NAME indica el nombre del archvio .tar.gz resultante, " ;
-	printf '\t\t%s\n' "		por defecto globus-grid-app." ;
-	printf '\t\t%s\n' "-L	SAVE_FILE indica el lugar donde se guardara el archvio .tar.gz resultante, " ;
-	printf '\t\t%s\n' "		por defecto $DIR_PWD." ;
+	printf '\t\t%s\n' "	por defecto globus-grid-app." ;
+	printf '\t\t%s\n' "-L	SAVE_FILE indica el lugar donde se guardara el archivo" ;
+	printf '\t\t%s\n' "	.tar.gz resultante, por defecto la carpeta actual." ;
 	printf '\t\t%s\n' "-h	imprime esta ayuda."   ; 
 	printf '%s\n' "" ;
 	} 
@@ -40,19 +40,22 @@ do
 	esac
 done
 
-	mkdir -p $DIR_LOCAL/cookbooks/confighost/attributes/tmp-release
-	mv $DIR_LOCAL/cookbooks/confighost/attributes/* $DIR_LOCAL/cookbooks/confighost/attributes/tmp-release/
-	cat $DIR_LOCAL/cookbooks/confighost/attributes/tmp-release/default-release.rb | sed 's/^#*//g' > $DIR_LOCAL/cookbooks/confighost/attributes/default.rb ;
-	
-	rm -rf $SAVE_FILE/$NAME.tar.gz ;
-	tar czvf $SAVE_FILE/$NAME.tar.gz -X $DIR_ETC/package-release.ignore  ./* ;
-	
-	rm $DIR_LOCAL/cookbooks/confighost/attributes/default.rb ;
-	mv $DIR_LOCAL/cookbooks/confighost/attributes/tmp-release/* $DIR_LOCAL/cookbooks/confighost/attributes/
-	rm -rf $DIR_LOCAL/cookbooks/confighost/attributes/tmp-release
-	
-	printf '\n%s\n' "Release salvado en $SAVE_FILE/$NAME.tar.gz"
-	printf '%s\n' "";
+DIR_ATT="$DIR_LOCAL/cookbooks/confighost/attributes"
+
+
+mkdir -p "$DIR_ATT/tmp-release"
+mv "$DIR_ATT/"*.rb "$DIR_ATT/tmp-release/"
+cat "$DIR_ATT/tmp-release/default-release.rb" | sed 's/^#*//g' > "$DIR_ATT/default.rb" ;
+
+rm -rf "$SAVE_FILE/$NAME.tar.gz" ;
+tar czvf "$SAVE_FILE/$NAME.tar.gz" -X "$DIR_ETC/package-release.ignore"  ./*
+
+rm "$DIR_ATT/default.rb"
+mv "$DIR_ATT/tmp-release/"*.rb "$DIR_ATT/"
+rm -rf "$DIR_ATT/tmp-release"
+
+printf '\n%s\n' "Release salvado en $SAVE_FILE/$NAME.tar.gz"
+printf '%s\n' ""
 
 exit 0
 

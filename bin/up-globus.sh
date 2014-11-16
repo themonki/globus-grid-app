@@ -8,25 +8,25 @@ DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 cd $DIR_LOCAL
 
-if [ $# = 1 ] ; then
-  if [ $1 = "mg" ] || [ $1 = "mgwn1" ]; then
-    
-    echo "Iniciando la maquina $1"
+tam=$(CountElementConfig "['MACHINE_SLAVES']")
 
-    vagrant reload --no-provision $1
-
-    echo "maquinas $1 iniciada"
-    
-  fi
+if [ $# = 1 ] ; then	
+	echo "Iniciando la maquina $1"
+	vagrant reload --no-provision $1
+	echo "maquina $1 iniciada"
 else
-  echo "Iniciando las maquinas"
-
-  vagrant reload --no-provision mg
-
-  vagrant reload --no-provision mgwn1
-
-  echo "maquinas iniciadas"
-
+	echo "Iniciando las maquinas"
+	#slaves
+	for (( c=1; c<=$tam; c++ ))
+	do
+		name="slave$c"
+		node_name=$(GetElementConfig "['MACHINE_SLAVES']['$name']['node_name']")
+		vagrant reload --no-provision $name_name
+	done
+	#master
+	master_name=$(GetElementConfig "['MACHINE_MASTER']['node_name']")
+	vagrant reload --no-provision $master_name
+	echo "maquinas iniciadas"
 fi
 
 cd $DIR_PWD

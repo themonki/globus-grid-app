@@ -9,7 +9,7 @@ require 'fileutils'
 env_file = File.dirname(__FILE__) + "/../etc/env.rb"
 default_env_file = ENV['ENV_FILE']
 require default_env_file != nil && File.exists?(default_env_file) ? default_env_file : env_file
-DEF_PATH = File.dirname(__FILE__) + "/../local/nodestest"
+DEF_PATH = File.dirname(__FILE__) + "/../local/nodes"
 FileUtils.mkdir_p DEF_PATH
 
 ############ master.json
@@ -84,7 +84,7 @@ end
 ############ master_signsimpleca.json
 def master_signsimpleca_json(path=DEF_PATH)
 	master_signsimpleca = {
-		"slaves"=> MACHINE_MASTER[:alias],
+		"slaves"=> MACHINE_NAME_SLAVES,
 		"run_list"=> ["recipe[simpleca::signcerts]" ]
 	}
 	#puts JSON.pretty_generate(master_signsimpleca)

@@ -9,24 +9,53 @@ DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 #Si se emplea el share folder no se necesesita confirgurar
 #SHARE_FOLDER_ACTIVE="$(grep -lir 'USE_SHARE_FOLDER.*=.*true' $DIR_LOCAL/Vagrantfile)"
 SHARE_FOLDER_ACTIVE=$(GetElementConfig "['USE_SHARE_FOLDER']")
+confirm_all=false
+
+while getopts 'y' option;
+do
+	case "$option"
+		in
+			y) confirm_all=true;;
+	esac
+done
 
 if [ $SHARE_FOLDER_ACTIVE != "true" ]; then
-	FILE=$DIR_LOCAL/cookbooks/confighost/attributes/default.rb
-	profile=false;
+	FILE="$DIR_LOCAL/cookbooks/confighost/attributes/default.rb"
 	if [ -e $FILE ]; then
-		while read line
-		do
-			if [[ "$line" == *"$HOME"* ]]
-				then
-					profile=true;
-			fi
-		done < $FILE
-		if [ $profile == false ]; then
-			echo "El perfil por defecto no corresponde al usuario actual, actualice con manage-user-profile.sh";
-			exit;
+		#Confirmar los valores del atributo al usuario
+		result=$(cat $FILE | grep "user_maquina_local")
+		var=${result#*=}
+		usr_file=$(echo $var | sed -e 's/\"//g')
+		result=$(cat $FILE | grep "pass_maquina_local")
+		var=${result#*=}
+		pass_file=$(echo $var | sed -e 's/\"//g')
+		result=$(cat $FILE | grep "ip_maquina_local")
+		var=${result#*=}
+		ip_file=$(echo $var | sed -e 's/\"//g')
+		result=$(cat $FILE | grep "path_project_vagrant")
+		var=${result#*=}
+		dir_file=$(echo $var | sed -e 's/\"//g')
+		
+		echo "La configuración del archivo /etc/hosts no se realizara por medio de la carpeta compartida de Vagrant"
+		echo "La siguiente es la configuración que permitira conectarse a la maquina local por ssh a esta maquina:"
+		echo
+		echo "user_maquina_local = $usr_file"
+		echo "pass_maquina_local = $pass_file"
+		echo "ip_maquina_local = $ip_file"
+		echo "path_project_vagrant = $dir_file"
+		echo
+		if [ $confirm_all == false ]; then
+			echo "¿Esta seguro de que desea continuar?"
+			echo
+			select yn in "Yes" "No"; do
+				case $yn in
+					Yes )echo; break;;
+					No ) echo; exit;;
+				esac
+			done
 		fi
 	else
-		echo "Debe generar primero el perfil por defecto del usuario con manage-user-profile.sh";
+		echo "Debe generar primero el perfil para conectarse al usuario local con manage-user-profile.sh";
 		exit;
 	fi
 fi

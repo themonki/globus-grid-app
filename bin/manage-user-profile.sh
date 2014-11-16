@@ -16,7 +16,7 @@ VARUSER="$(whoami)"
 
 file_exists() {
 	FILE=$1
-	if [ -e $FILE ]; then
+	if [ -e "$FILE" ]; then
 		return 0; 
 	else
 		return 1;

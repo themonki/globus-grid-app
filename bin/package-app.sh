@@ -16,9 +16,9 @@ function print_help {
 	printf '\t%s\n' "Opciones:" ;
 	printf '%s\n' "" ;
 	printf '\t\t%s\n' "-n	NAME indica el nombre del archvio .tar.gz resultante, " ;
-	printf '\t\t%s\n' "		por defecto app." ;
-	printf '\t\t%s\n' "-l	SAVE_FILE indica el directorio donde guardar el archivo resultante, " ;
-	printf '\t\t%s\n' "		por defecto /tmp." ;
+	printf '\t\t%s\n' "	por defecto app." ;
+	printf '\t\t%s\n' "-l	SAVE_FILE indica el directorio donde guardar el archivo" ;
+	printf '\t\t%s\n' "	resultante, por defecto /tmp." ;
 	printf '\t\t%s\n' "-h	imprime esta ayuda."   ; 
 	printf '%s\n' "" ;
 } 
@@ -40,10 +40,10 @@ do
 	esac
 done
 	
-	cd $DIR_LOCAL;
-	rm -rf $SAVE_FILE/$NAME.tar.gz ;
-	tar czvf $SAVE_FILE/$NAME.tar.gz -X $DIR_ETC/package-app.ignore  app;
-	cd $DIR_PWD;
+	cd "$DIR_LOCAL";
+	rm -rf "$SAVE_FILE/$NAME.tar.gz" ;
+	tar czvf "$SAVE_FILE/$NAME.tar.gz" -X "$DIR_ETC/package-app.ignore" app;
+	cd "$DIR_PWD";
 	
 	printf '\n%s\n' "Release salvado en $SAVE_FILE/$NAME.tar.gz"
 	printf '%s\n' "";

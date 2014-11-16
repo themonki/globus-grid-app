@@ -12,7 +12,7 @@ PATH_NODES=$DIR_LOCAL/nodes
 
 rm -rf $PATH_NODES/master*.json $PATH_NODES/slave*.json
 
-mkdir -p PATH_NODES
+mkdir -p $PATH_NODES
 
 comand=$(ruby -r $CONF_RB -e "slavei_json '$PATH_NODES'")
 

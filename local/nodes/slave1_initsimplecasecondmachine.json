@@ -1,0 +1,7 @@
+{
+  "user_name": "vagrant",
+  "host_name": "mgwm1.globustest.org",
+  "run_list": [
+    "recipe[simpleca::secondmachine]"
+  ]
+}

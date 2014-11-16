@@ -1,0 +1,8 @@
+{
+  "slaves": [
+    "mgwn1"
+  ],
+  "run_list": [
+    "recipe[simpleca::signcerts]"
+  ]
+}

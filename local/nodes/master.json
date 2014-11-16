@@ -1,0 +1,13 @@
+{
+  "host_name": "mg.globustest.org",
+  "hostslaves": [
+    "mgwn1"
+  ],
+  "alias": "mg",
+  "use_share_folder": "true",
+  "name": "master",
+  "chef_environment": "_default",
+  "run_list": [
+    "role[master]"
+  ]
+}

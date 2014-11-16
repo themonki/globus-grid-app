@@ -1,0 +1,7 @@
+{
+  "run_list": [
+    "recipe[configSSL]",
+    "recipe[database]",
+    "recipe[app]"
+  ]
+}

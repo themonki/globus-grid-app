@@ -1,3 +1,6 @@
+#####################################################
+include_recipe "confighost::getipadd"
+
 #se suben los archivos generados por los nodos con las ips respectivas
 
 cookbook_file "/home/vagrant/hosts_nodes" do
@@ -18,20 +21,7 @@ execute "add to templatehost" do
 	user "root"
 	#group "admin"
 	cwd "/home/vagrant"
-	command "cat hosts_nodes >> hostsTemplate ; cat  hostsTemplate > /etc/hosts"
-	action :run
-end
-
-#####################################################
-include_recipe "confighost::getipadd"
-
-##agregar a el hosts
-
-execute "add hosts" do
-	user "root"
-	#group "admin"
-	cwd "/home/vagrant"
-	command "cat hosts >> /etc/hosts"
+	command "cat hosts >> hostsTemplate; cat hosts_nodes >> hostsTemplate ; cat  hostsTemplate > /etc/hosts"
 	action :run
 end
 

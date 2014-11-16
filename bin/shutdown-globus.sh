@@ -8,25 +8,25 @@ DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 cd $DIR_LOCAL
 
+tam=$(CountElementConfig "['MACHINE_SLAVES']")
+
 if [ $# = 1 ] ; then
-  if [ $1 = "mg" ] || [ $1 = "mgwn1" ]; then
-    
-    echo "Apagando la maquina $1"
-
-    vagrant halt $1
-
-    echo "maquinas $1 apagada"
-    
-  fi
+	echo "Apagando la maquina $1"
+	vagrant halt $1
+	echo "maquina $1 apagada"
 else
-  echo "Apagando las maquinas"
-
-  vagrant halt mg
-
-  vagrant halt mgwn1
-
-  echo "maquinas apagadas"
-
+	echo "Apagando las maquinas"
+	#slaves
+	for (( c=1; c<=$tam; c++ ))
+	do
+		name="slave$c"
+		node_name=$(GetElementConfig "['MACHINE_SLAVES']['$name']['node_name']")
+		vagrant halt $name_name
+	done
+	#master
+	master_name=$(GetElementConfig "['MACHINE_MASTER']['node_name']")
+	vagrant halt $master_name
+	echo "maquinas apagadas"
 fi
 
 cd $DIR_PWD

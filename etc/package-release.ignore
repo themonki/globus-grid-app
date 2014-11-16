@@ -6,5 +6,6 @@ v.*.tar.gz
 **package-release.ignore
 **nbproject/private
 **app/*.tar.gz
-**API
+**api
+**usercred.p12
 
