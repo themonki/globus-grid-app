@@ -20,7 +20,7 @@ if [ -z "$CONFIG_FILE" ]; then
 	CONFIG_FILE="$DIR_ETC/config.json"
 	export CONFIG_FILE
 fi
-if [ -z "$CONFIG_FILE" ]; then
+if [ -z "$ENV_FILE" ]; then
 	ENV_FILE="$DIR_ETC/env.rb"
 	export ENV_FILE
 fi
