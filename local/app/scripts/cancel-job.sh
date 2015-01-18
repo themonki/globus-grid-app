@@ -8,9 +8,9 @@ STRING_CONTACT=""
 export PATH_PROXY_VALIDACION=$PWD_APP_SCRIPTS/proxyValidacion.sh
 
 file_exists() {
-  FILE=$1  
-  if [ -e $FILE ]; then
-    return 0; 
+  FILE=$1
+  if [ -e "$FILE" ]; then
+    return 0;
   else
     return 1;
   fi
@@ -22,7 +22,7 @@ function print_error	{
 }
 
 
-function cancel_job {	
+function cancel_job {
 	if [[ $STRING_CONTACT != "" ]] ; then
 		$PATH_PROXY_VALIDACION -q -p $USER_PASS
 		VALUE=$(globusrun -k $STRING_CONTACT);

@@ -6,8 +6,7 @@
 #En desarrollo
 
 
-DIR_PWD="$(pwd)"
+DIR_PWD2="$(pwd)"
 DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR_SOURCE/bin/env.sh
-
-
+. "$DIR_SOURCE"/bin/env.sh
+cd "$DIR_PWD2"

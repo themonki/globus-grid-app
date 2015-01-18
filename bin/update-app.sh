@@ -2,14 +2,15 @@
 # -*- mode: sh -*-
 # vi: set ft=sh :
 
-DIR_PWD="$(pwd)"
+DIR_PWD2="$(pwd)"
 DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR_SOURCE/env.sh
+. "$DIR_SOURCE"/env.sh
+cd "$DIR_PWD2"
 
 SAVE_FILE=/tmp
 NAME="app"
 
-$DIR_BIN/package-app.sh -n $NAME -l $SAVE_FILE
+"$DIR_BIN"/package-app.sh -n "$NAME" -l "$SAVE_FILE"
 
 DIR_APP="$DIR_LOCAL/cookbooks/app/files/default"
 

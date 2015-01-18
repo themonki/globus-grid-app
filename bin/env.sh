@@ -27,22 +27,22 @@ fi
 
 #Obtiene un elemento del JSON del config.json
 GetElementConfig() {
-    element=$1
-    param="j = JSON.parse(File.read(\"$CONFIG_FILE\")); puts j$element"
+   element=$1
+   param="j = JSON.parse(File.read(\"$CONFIG_FILE\")); puts j$element"
 	exe=$(ruby -rjson -e "$param")
-	echo $exe
+	echo "$exe"
 }
 #Cuenta cuantos elementos tiene el JSON del config.json
 CountElementConfig() {
-    element=$1
-    param="j = JSON.parse(File.read(\"$CONFIG_FILE\"));  puts j$element.count"
+   element=$1
+   param="j = JSON.parse(File.read(\"$CONFIG_FILE\"));  puts j$element.count"
 	exe=$(ruby -rjson -e "$param")
-	echo $exe
+	echo "$exe"
 }
 
 
 #var="['MACHINE_SLAVES']['slave1']['node_name']"
 
-#GetElementConfig "['MACHINE_SLAVES']['slave1']['node_name']" 
+#GetElementConfig "['MACHINE_SLAVES']['slave1']['node_name']"
 
 #CountElementConfig "['MACHINE_SLAVES']['slave1']"

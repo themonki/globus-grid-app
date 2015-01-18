@@ -2,13 +2,14 @@
 # -*- mode: sh -*-
 # vi: set ft=sh :
 
-DIR_PWD="$(pwd)"
+DIR_PWD2="$(pwd)"
 DIR_SOURCE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR_SOURCE/env.sh
+. "$DIR_SOURCE"/env.sh
+cd "$DIR_PWD2"
 
-SAVE_FILE=$DIR_PWD
+SAVE_FILE="$DIR_PWD2"
 NAME="globus-grid-app"
-function print_help { 
+function print_help {
 	printf '%s\n' "";
 	printf '%s\n' "package-realease: empaqueta el contenido necesario para la ejecución de las ";
 	printf '%s\n' "recetas, para ignorar ciertos archivos agregarlos al archivo .package.ignore"  ;
@@ -19,9 +20,9 @@ function print_help {
 	printf '\t\t%s\n' "	por defecto globus-grid-app." ;
 	printf '\t\t%s\n' "-L	SAVE_FILE indica el lugar donde se guardara el archivo" ;
 	printf '\t\t%s\n' "	.tar.gz resultante, por defecto la carpeta actual." ;
-	printf '\t\t%s\n' "-h	imprime esta ayuda."   ; 
+	printf '\t\t%s\n' "-h	imprime esta ayuda."   ;
 	printf '%s\n' "" ;
-	} 
+	}
 
 function print_error {
 	printf '%s\n' "";
@@ -45,7 +46,7 @@ DIR_ATT="$DIR_LOCAL/cookbooks/confighost/attributes"
 
 mkdir -p "$DIR_ATT/tmp-release"
 mv "$DIR_ATT/"*.rb "$DIR_ATT/tmp-release/"
-cat "$DIR_ATT/tmp-release/default-release.rb" | sed 's/^#*//g' > "$DIR_ATT/default.rb" ;
+sed 's/^#*//g' <  "$DIR_ATT/tmp-release/default-release.rb" > "$DIR_ATT/default.rb";
 
 rm -rf "$SAVE_FILE/$NAME.tar.gz" ;
 tar czvf "$SAVE_FILE/$NAME.tar.gz" -X "$DIR_ETC/package-release.ignore"  ./*
@@ -58,5 +59,3 @@ printf '\n%s\n' "Release salvado en $SAVE_FILE/$NAME.tar.gz"
 printf '%s\n' ""
 
 exit 0
-
-

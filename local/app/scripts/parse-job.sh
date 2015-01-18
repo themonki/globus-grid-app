@@ -13,9 +13,9 @@ JOB_MANAGER="jobmanager"
 export PATH_PROXY_VALIDACION=$PWD_APP_SCRIPTS/proxyValidacion.sh
 
 file_exists() {
-  FILE=$1  
-  if [ -e $FILE ]; then
-    return 0; 
+  FILE=$1
+  if [ -e "$FILE" ]; then
+    return 0;
   else
     return 1;
   fi
@@ -32,7 +32,7 @@ function parse_job {
 	if file_exists "$RSL_FILE" ; then
 		$PATH_PROXY_VALIDACION -q -p $USER_PASS
 		VALUE=$(globusrun -p -f $RSL_FILE);
-		if [[ $VALUE -eq $SUCESS_MSG ]] ; then 
+		if [[ $VALUE -eq $SUCESS_MSG ]] ; then
 			printf '%s\n' "true";
 		else
 			printf '%s\n' "false";

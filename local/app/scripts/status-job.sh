@@ -6,9 +6,9 @@ STRING_CONTACT=""
 export PATH_PROXY_VALIDACION=$PWD_APP_SCRIPTS/proxyValidacion.sh
 
 file_exists() {
-  FILE=$1  
-  if [ -e $FILE ]; then
-    return 0; 
+  FILE=$1
+  if [ -e "$FILE" ]; then
+    return 0;
   else
     return 1;
   fi
@@ -39,4 +39,3 @@ do
 done
 
 status_job
-

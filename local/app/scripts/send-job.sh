@@ -12,9 +12,9 @@ JOB_MANAGER="jobmanager"
 export PATH_PROXY_VALIDACION=$PWD_APP_SCRIPTS/proxyValidacion.sh
 
 file_exists() {
-  FILE=$1  
-  if [ -e $FILE ]; then
-    return 0; 
+  FILE=$1
+  if [ -e "$FILE" ]; then
+    return 0;
   else
     return 1;
   fi
@@ -30,7 +30,7 @@ function run_job {
 		$PATH_PROXY_VALIDACION -q -p $USER_PASS
 		VALUE=$(globusrun -q -b -r $GLOBUS_HOST:$PORT/$JOB_MANAGER -f $RSL_FILE);
 		printf '%s\n' "$VALUE";
-	fi	
+	fi
 }
 
 while getopts 'p: f: j:' option;
@@ -45,4 +45,3 @@ do
 done
 
 run_job
-

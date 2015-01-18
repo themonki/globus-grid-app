@@ -10,9 +10,9 @@ USER_PASS=""
 QUIET_MODE=1
 
 file_exists() {
-  FILE=$1  
-  if [ -e $FILE ]; then
-    return 0; 
+  FILE=$1
+  if [ -e "$FILE" ]; then
+    return 0;
   else
     return 1;
   fi
@@ -28,7 +28,7 @@ function print_error	{
 }
 
 function generar_proxy {
-	if file_exists "$X509_USER_PROXY" ; then 
+	if file_exists "$X509_USER_PROXY" ; then
 		VALUE=$(grid-proxy-info -timeleft);
 		if [[ $VALUE -gt 100 ]] ; then
 			if quiet_mode ; then
@@ -40,7 +40,7 @@ function generar_proxy {
 				printf '%s\n' "Proxy ya no es valido. Generando nuevo ...";
 			fi
 		fi
-	fi	
+	fi
 	if quiet_mode ; then
 		$PATH_PROXY_INIT -p $USER_PASS
 		printf '%s\n' "Proxy generado correctamente.";
@@ -50,7 +50,7 @@ function generar_proxy {
 }
 
 function info_proxy {
-	if file_exists "$X509_USER_PROXY" ; then 
+	if file_exists "$X509_USER_PROXY" ; then
 		grid-proxy-info
 	else
 		if quiet_mode ; then
@@ -60,7 +60,7 @@ function info_proxy {
 }
 
 function destruir_proxy {
-	if file_exists "$X509_USER_PROXY" ; then 
+	if file_exists "$X509_USER_PROXY" ; then
 		grid-proxy-destroy
 		if quiet_mode ; then
 			printf '%s\n' "Proxy destruido correctamente.";
@@ -74,7 +74,7 @@ function destruir_proxy {
 }
 
 function info_proxy {
-	if file_exists "$X509_USER_PROXY" ; then 
+	if file_exists "$X509_USER_PROXY" ; then
 		grid-proxy-info
 	else
 		if quiet_mode ; then

@@ -6,9 +6,9 @@ env_file = File.dirname(__FILE__) + "/../etc/env.rb"
 default_env_file = ENV['ENV_FILE']
 require default_env_file != nil && File.exists?(default_env_file) ? default_env_file : env_file
 
-VAGRANTFILE_API_VERSION = "2"
-
 Vagrant.require_version ">= 1.6.5"
+
+VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 	MACHINE_SLAVES.each do |name, slave|
@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 			node.vm.synced_folder "../etc/", "/globus-grid-app/etc"
 		end
 	end
-	
+
 	config.vm .define MACHINE_MASTER[:node_name] do |node|
 		node.vm.box = "centos64"
 		#node.vm.boot_mode = :gui
@@ -48,5 +48,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 		end
 		node.vm.synced_folder "../etc/", "/globus-grid-app/etc"
 	end
-	
+
 end
