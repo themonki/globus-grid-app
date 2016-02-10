@@ -1,10 +1,11 @@
 #Netbeans
 **nbproject/private
 
+#Archivos Generados
 *.p12
-
 **/.vagrant/
 **api
+log.txt
 
 ##################
 
